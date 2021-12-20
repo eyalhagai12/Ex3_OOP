@@ -17,21 +17,21 @@ class NodeTestCase(unittest.TestCase):
     def test_add_in_edge(self):
         node = Node()
         self.assertEqual(node.get_in_edges(), {})
-        node.add_in_edge((5, node.get_id(), 3.314))
+        node.add_in_edge(Edge(0, 5, node.get_id(), 3.314))
         self.assertNotEqual(node.get_in_edges(), {})
         self.assertTrue(len(node.get_in_edges()) == 1)
 
     def test_add_out_edge(self):
         node = Node()
         self.assertEqual(node.get_out_edges(), {})
-        node.add_out_edge((node.get_id(), 5, 3.314))
+        node.add_out_edge(Edge(0, node.get_id(), 5, 3.314))
         self.assertNotEqual(node.get_out_edges(), {})
         self.assertTrue(len(node.get_out_edges()) == 1)
 
     def test_remove_in_edge(self):
         node = Node()
-        node.add_in_edge((5, node.get_id(), 3.314))
-        node.add_in_edge((4, node.get_id(), 2.314))
+        node.add_in_edge(Edge(0, 5, node.get_id(), 3.314))
+        node.add_in_edge(Edge(1, 4, node.get_id(), 2.314))
         self.assertTrue(len(node.in_edges) == 2)
         self.assertEqual(node.remove_in_edge(5), True)
         self.assertTrue(len(node.in_edges) == 1)
@@ -39,8 +39,8 @@ class NodeTestCase(unittest.TestCase):
 
     def test_remove_out_edge(self):
         node = Node()
-        node.add_out_edge((node.get_id(), 5, 3.314))
-        node.add_out_edge((node.get_id(), 4, 2.314))
+        node.add_out_edge(Edge(0, node.get_id(), 5, 3.314))
+        node.add_out_edge(Edge(1, node.get_id(), 4, 2.314))
         self.assertTrue(len(node.out_edges) == 2)
         self.assertEqual(node.remove_out_edge(5), True)
         self.assertTrue(len(node.out_edges) == 1)

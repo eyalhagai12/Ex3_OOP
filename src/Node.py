@@ -22,11 +22,11 @@ class Node:
     def get_out_edges(self):
         return self.out_edges
 
-    def add_in_edge(self, e: tuple):
-        self.in_edges[e[0]] = Edge(e[0], e[1], e[2])
+    def add_in_edge(self, e: Edge):
+        self.in_edges[e.get_src()] = e
 
-    def add_out_edge(self, e: tuple):
-        self.out_edges[e[1]] = Edge(e[0], e[1], e[2])
+    def add_out_edge(self, e: Edge):
+        self.out_edges[e.get_dst()] = e
 
     def remove_out_edge(self, dst: int):
         if dst not in self.out_edges.keys():

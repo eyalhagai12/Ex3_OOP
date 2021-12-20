@@ -15,16 +15,15 @@ class GraphAlgo(GraphAlgoInterface):
     def save_to_json(self, file):
         with open(file, "w") as f:
             json.dump(self, fp=f, indent=4, default=lambda x: x.__dict__)
-            # json.dump(self.__dict__,fp=f,indent=4)
 
     def load_from_json(self, file):
         graph_res = DiGraph()
         with open(file, "r") as f:
-            dict = json.load(f)
-        for n in dict["Nodes"]:
+            _dict = json.load(f)
+        for n in _dict["Nodes"]:
             position = n["pos"].split(",")
             graph_res.add_node(n["id"], pos=(position[0], position[1]))
-        for edge in dict["Edges"]:
+        for edge in _dict["Edges"]:
             graph_res.nodes[edge["src"]].add_in_edge((edge["src"], edge["dest"], edge["w"]))
             graph_res.nodes[edge["dest"]].add_out_edge((edge["src"], edge["dest"], edge["w"]))
             graph_res.edges.append(Edge(edge["src"], edge["dest"], edge["w"]))

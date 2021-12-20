@@ -6,7 +6,7 @@ from Edge import Edge
 class DiGraph(GraphInterface):
     def __init__(self):
         self.nodes = {}
-        self.edges = []
+        self.edges = {}
         self.mc = 0
 
     def v_size(self):
@@ -44,9 +44,17 @@ class DiGraph(GraphInterface):
         return self.mc
 
     def add_edge(self, id1: int, id2: int, weight: float):
-        self.nodes[id1].add_out_edge((id1, id2, weight))
-        self.nodes[id2].add_in_edge((id1, id2, weight))
-        self.edges.append(Edge(id1, id2, weight))
+        if len(self.edges) == 0:
+            e = Edge(0, id1, id2, weight)
+            self.edges[0] = e
+            self.nodes[id1].add_out_edge(e)
+            self.nodes[id2].add_in_edge(e)
+        else:
+            _id = max(self.edges.keys()) + 1
+            e = Edge(_id, id1, id2, weight)
+            self.edges[_id] = e
+            self.nodes[id1].add_out_edge(e)
+            self.nodes[id2].add_in_edge(e)
         self.mc += 1
 
     def add_node(self, node_id: int, pos: tuple = None):
@@ -62,22 +70,16 @@ class DiGraph(GraphInterface):
             return False
         else:
             # remove edges of node from self.edges
-            to_remove = []
-            for i, edge in enumerate(self.edges):
-                if edge.get_src() == node_id or edge.get_dst() == node_id:
-                    to_remove.append(self.edges[i])
-            for edge in to_remove:
-                self.edges.remove(edge)
+            temp_in = self.nodes[node_id].get_in_edges()
+            temp_out = self.nodes[node_id].get_out_edges()
 
-            # remove edges of node from other nodes
-            for node in self.nodes.values():
-                if node.get_id() == node_id:
-                    continue
-                if node_id in node.in_edges.keys():
-                    del node.in_edges[node_id]
-                if node_id in node.out_edges.keys():
-                    del node.out_edges[node_id]
+            temp_in = [edge for edge in temp_in.values()]
+            temp_out = [edge for edge in temp_out.values()]
 
+            for edge in temp_in:
+                self.remove_edge(edge.get_src(), edge.get_dst())
+            for edge in temp_out:
+                self.remove_edge(edge.get_src(), edge.get_dst())
             del self.nodes[node_id]
             self.mc += 1
             return True
@@ -86,12 +88,12 @@ class DiGraph(GraphInterface):
         if node_id1 not in self.nodes.keys() or node_id2 not in self.nodes.keys():
             return False
         else:
+            _id = self.nodes[node_id1].out_edges[node_id2].get_id()
+            del self.edges[_id]
+
             self.nodes[node_id1].remove_out_edge(node_id2)
             self.nodes[node_id2].remove_in_edge(node_id1)
-            for i, edge in enumerate(self.edges):
-                if edge.get_src() == node_id1 and edge.get_dst() == node_id2:
-                    self.edges.remove(self.edges[i])
-                    break
+
             self.mc += 1
             return True
 
