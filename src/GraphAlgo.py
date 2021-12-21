@@ -49,5 +49,5 @@ class GraphAlgo(GraphAlgoInterface):
 
 if __name__ == "__main__":
     g_algo = GraphAlgo(DiGraph())
-    g_algo.load_from_json("../data/A0.json")
+    g_algo.load_from_json("../data/A1.json")
     print(g_algo.centerPoint())

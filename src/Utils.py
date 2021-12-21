@@ -24,9 +24,9 @@ def dijkstra(graph: DiGraph, source: Node):
     heap = FibonacciHeap()
     infinity_weights(graph)
     source.set_weight(0)
-    heap.insert(source.get_weight(), source)
-    while heap.total_nodes > 0:
-        temp = heap.extract_min().value
+    heap.insert_node(source)
+    while heap.trees:
+        temp = heap.extract_min()
         if temp.get_tag() == 1:
             continue
         temp_edges = temp.get_out_edges()
@@ -34,10 +34,12 @@ def dijkstra(graph: DiGraph, source: Node):
             weight = temp.get_weight() + edge.get_weight()
             if weight < graph.get_node(edge.get_dst()).get_weight():
                 graph.get_node(edge.get_dst()).set_weight(weight)
-        temp.set_tag(1)
+        # temp.set_tag(1)
         for edge in temp_edges.values():
             if graph.get_node(edge.get_dst()).get_tag() != 1:
-                heap.insert(graph.get_node(edge.get_dst()).get_weight(), graph.get_node(edge.get_dst()))
+                heap.insert_node(value=graph.get_node(edge.get_dst()))
+
+        temp.set_tag(1)
     reset_tags(graph)
 
 
@@ -49,5 +51,4 @@ def find_max_distance(graph: DiGraph, source: Node):
         if node.get_weight() > max_weight:
             max_weight = node.get_weight()
             index = node.get_id()
-            x = str(type(index))
     return index
