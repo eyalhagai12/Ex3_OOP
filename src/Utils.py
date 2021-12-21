@@ -20,6 +20,18 @@ def reset_tags(graph: DiGraph):
         node.set_tag(0)
 
 
+def reset_info(graph: DiGraph):
+    for node in graph.get_all_v().values():
+        node.set_info(None)
+
+
+def reset_all(graph: DiGraph):
+    for node in graph.get_all_v().values():
+        node.set_weight(0)
+        node.set_tag(0)
+        node.set_info(None)
+
+
 def dijkstra(graph: DiGraph, source: Node):
     heap = FibonacciHeap()
     infinity_weights(graph)
@@ -34,10 +46,12 @@ def dijkstra(graph: DiGraph, source: Node):
             weight = temp.get_weight() + edge.get_weight()
             if weight < graph.get_node(edge.get_dst()).get_weight():
                 graph.get_node(edge.get_dst()).set_weight(weight)
-        # temp.set_tag(1)
+
         for edge in temp_edges.values():
             if graph.get_node(edge.get_dst()).get_tag() != 1:
-                heap.insert_node(value=graph.get_node(edge.get_dst()))
+                next_node = graph.get_node(edge.get_dst())
+                next_node.set_info(temp)  # for shortest path
+                heap.insert_node(value=next_node)
 
         temp.set_tag(1)
     reset_tags(graph)
@@ -52,3 +66,12 @@ def find_max_distance(graph: DiGraph, source: Node):
             max_weight = node.get_weight()
             index = node.get_id()
     return index
+
+
+def make_shortest_list(graph: DiGraph, destination: Node):
+    x = [destination.get_id()]
+    parent = destination.get_info()
+    while parent is not None:
+        x.insert(0, parent.get_id())
+        parent = parent.get_info()
+    return x

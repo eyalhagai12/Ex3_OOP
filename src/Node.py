@@ -11,6 +11,7 @@ class Node:
         # for GraphAlgo
         self.weight: float = 0
         self.tag: int = 0
+        self.info: int = None
         #
 
     def get_id(self):
@@ -27,6 +28,12 @@ class Node:
 
     def get_tag(self):
         return self.tag
+
+    def set_info(self, _id: int):
+        self.info = _id
+
+    def get_info(self):
+        return self.info
 
     def get_in_edges(self):
         return self.in_edges

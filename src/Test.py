@@ -110,11 +110,43 @@ class DiGraphTestCase(unittest.TestCase):
 
 
 class GraphAlgoTestCase(unittest.TestCase):
+    def test_save_to_json(self):
+        pass
+
     def test_load_from_json(self):
         g_algo = GraphAlgo(DiGraph())
         g_algo.load_from_json("../data/A0.json")
         self.assertEqual(g_algo.__repr__(), "Graph: |V|=11 , |E|=22")
         self.assertEqual(g_algo.get_graph().get_all_v()[0].get_id(), 0)
+
+    def test_shortest_path(self):
+        g_algo = GraphAlgo(DiGraph())
+        graph = g_algo.get_graph()
+        for n in range(4):
+            graph.add_node(n)
+        graph.add_edge(0, 1, 1)
+        graph.add_edge(1, 0, 1.1)
+        graph.add_edge(1, 2, 1.3)
+        graph.add_edge(2, 3, 1.1)
+        graph.add_edge(1, 3, 1.9)
+        graph.remove_edge(1, 3)
+        graph.add_edge(1, 3, 10)
+        self.assertEqual(g_algo.shortest_path(0, 3), (3.4, [0, 1, 2, 3]))
+
+    def test_centerPoint(self):
+        g_algo = GraphAlgo(DiGraph())
+        g_algo.load_from_json("../data/A0.json")
+        self.assertEqual(g_algo.centerPoint(), (7, 6.806805834715163))
+        g_algo.load_from_json("../data/A1.json")
+        self.assertEqual(g_algo.centerPoint(), (8, 9.925289024973141))
+        g_algo.load_from_json("../data/A2.json")
+        self.assertEqual(g_algo.centerPoint(), (0, 7.819910602212574))
+        g_algo.load_from_json("../data/A3.json")
+        self.assertEqual(g_algo.centerPoint(), (2, 8.182236568942237))
+        g_algo.load_from_json("../data/A4.json")
+        self.assertEqual(g_algo.centerPoint(), (6, 8.071366078651435))
+        g_algo.load_from_json("../data/A5.json")
+        self.assertEqual(g_algo.centerPoint(), (40, 9.291743173960954))
 
 
 if __name__ == '__main__':

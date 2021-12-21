@@ -32,6 +32,7 @@ class GraphAlgo(GraphAlgoInterface):
         self.graph = graph_res
 
     def centerPoint(self) -> (int, float):
+        reset_all(self.graph)
         weights = []
         for node in self.graph.get_all_v().values():
             reset_weights(self.graph)
@@ -42,6 +43,12 @@ class GraphAlgo(GraphAlgoInterface):
         index = [x[1] for x in weights].index(min_value)
         weight = weights[index][1]
         return index, weight
+
+    def shortest_path(self, source: int, destination: int) -> (float, list):
+        reset_all(self.graph)
+        dijkstra(self.graph, self.graph.get_node(source))
+        path = make_shortest_list(self.graph, self.graph.get_node(destination))
+        return self.graph.get_node(destination).get_weight(), path
 
     def __repr__(self):
         return f"{self.graph}"
