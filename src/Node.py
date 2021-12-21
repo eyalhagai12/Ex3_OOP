@@ -16,6 +16,18 @@ class Node:
     def get_id(self):
         return self.id
 
+    def set_weight(self, w: float):
+        self.weight = w
+
+    def get_weight(self):
+        return self.weight
+
+    def set_tag(self, t: int):
+        self.tag = t
+
+    def get_tag(self):
+        return self.tag
+
     def get_in_edges(self):
         return self.in_edges
 
@@ -41,6 +53,24 @@ class Node:
         else:
             del self.in_edges[src]
             return True
+
+    def __lt__(self, other):
+        return self.weight < other.get_weight()
+
+    def __gt__(self, other):
+        return self.weight > other.get_weight()
+
+    def __eq__(self, other):
+        return self.weight == other.get_weight()
+
+    def __le__(self, other):
+        return self.weight <= other.get_weight()
+
+    def __ge__(self, other):
+        return self.weight >= other.get_weight()
+
+    def __ne__(self, other):
+        return self.weight != other.get_weight()
 
     def __repr__(self):
         return f"{self.id}: |edges out| {len(self.out_edges)} |edges in| {len(self.in_edges)}"

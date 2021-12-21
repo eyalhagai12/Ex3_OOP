@@ -18,6 +18,9 @@ class DiGraph(GraphInterface):
     def get_all_v(self):
         return self.nodes
 
+    def get_node(self, _id: int):
+        return self.nodes[_id]
+
     def all_in_edges_of_node(self, id1: int):
         out = {}
         for edge in self.nodes[id1].get_in_edges().values():
@@ -69,7 +72,6 @@ class DiGraph(GraphInterface):
         if node_id not in self.nodes.keys():
             return False
         else:
-            # remove edges of node from self.edges
             temp_in = self.nodes[node_id].get_in_edges()
             temp_out = self.nodes[node_id].get_out_edges()
 

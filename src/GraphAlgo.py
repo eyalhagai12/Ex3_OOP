@@ -1,15 +1,18 @@
 import json
+import numpy as np
 
 from GraphAlgoInterface import GraphAlgoInterface
+from GraphInterface import GraphInterface
 from DiGraph import DiGraph
 from Edge import Edge
+from Utils import *
 
 
 class GraphAlgo(GraphAlgoInterface):
     def __init__(self, g: DiGraph):
         self.graph = g
 
-    def get_graph(self):
+    def get_graph(self) -> GraphInterface:
         return self.graph
 
     def save_to_json(self, file):
@@ -24,10 +27,25 @@ class GraphAlgo(GraphAlgoInterface):
             position = n["pos"].split(",")
             graph_res.add_node(n["id"], pos=(position[0], position[1]))
         for edge in _dict["Edges"]:
-            graph_res.nodes[edge["src"]].add_in_edge((edge["src"], edge["dest"], edge["w"]))
-            graph_res.nodes[edge["dest"]].add_out_edge((edge["src"], edge["dest"], edge["w"]))
-            graph_res.edges.append(Edge(edge["src"], edge["dest"], edge["w"]))
+            graph_res.add_edge(edge["src"], edge["dest"], edge["w"])
         self.graph = graph_res
+
+    def centerPoint(self) -> (int, float):
+        weights = []
+        for node in self.graph.get_all_v().values():
+            node_id = find_max_distance(self.graph, node)
+            temppp = self.graph.get_node(node_id)
+            weights.append((node_id, self.graph.get_node(node_id).get_weight()))
+        index = min(np.array(weights)[:, 1].astype(int))
+        weight = self.graph.get_node(index)
+        return index, weight
 
     def __repr__(self):
         return f"{self.graph}"
+
+
+if __name__ == "__main__":
+    g_algo = GraphAlgo(DiGraph())
+    g_algo.load_from_json("../data/A0.json")
+    print(g_algo.centerPoint())
+
