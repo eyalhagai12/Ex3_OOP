@@ -1,4 +1,5 @@
 import math
+from collections import OrderedDict
 
 from FibHeap import FibonacciHeap
 from Node import Node
@@ -46,11 +47,12 @@ def dijkstra(graph: DiGraph, source: Node):
             weight = temp.get_weight() + edge.get_weight()
             if weight < graph.get_node(edge.get_dst()).get_weight():
                 graph.get_node(edge.get_dst()).set_weight(weight)
+                next_node = graph.get_node(edge.get_dst())
+                next_node.set_info(temp)  # for shortest path
 
         for edge in temp_edges.values():
             if graph.get_node(edge.get_dst()).get_tag() != 1:
                 next_node = graph.get_node(edge.get_dst())
-                next_node.set_info(temp)  # for shortest path
                 heap.insert_node(value=next_node)
 
         temp.set_tag(1)
@@ -69,9 +71,45 @@ def find_max_distance(graph: DiGraph, source: Node):
 
 
 def make_shortest_list(graph: DiGraph, destination: Node):
-    x = [destination.get_id()]
+    x = []
     parent = destination.get_info()
     while parent is not None:
         x.insert(0, parent.get_id())
         parent = parent.get_info()
+    if destination.get_weight() is not math.inf:
+        x.append(destination.get_id())
     return x
+
+
+def custom_search(graph: DiGraph, cities: list):
+    result = []
+    best_node = graph.get_node(cities[0])
+    overall_distance = 0
+
+    while best_node is not None:
+        reset_all(graph)
+        (n, d) = add_closest(graph, best_node, cities, result)
+        best_node = n
+        if d is not math.inf:
+            overall_distance += d
+    temp = result
+    result = list(OrderedDict.fromkeys(result))
+    return result, overall_distance
+
+
+def add_closest(graph: DiGraph, src: Node, cities: list, result: list):
+    dijkstra(graph, src)
+    min_dist = math.inf
+    best_node = None
+    for index in cities:
+        node = graph.get_node(index)
+        if node is not None and node.get_id() is not src.get_id() and node.get_id() not in result:
+            if node.get_weight() < min_dist:
+                min_dist = node.get_weight()
+                best_node = node
+
+    if best_node is not None:
+        path = make_shortest_list(graph, best_node)
+        result.extend(path)
+
+    return best_node, min_dist

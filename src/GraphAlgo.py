@@ -9,7 +9,7 @@ from Utils import *
 
 
 class GraphAlgo(GraphAlgoInterface):
-    def __init__(self, g: DiGraph):
+    def __init__(self, g: DiGraph = None):
         self.graph = g
 
     def get_graph(self) -> GraphInterface:
@@ -49,6 +49,9 @@ class GraphAlgo(GraphAlgoInterface):
         dijkstra(self.graph, self.graph.get_node(source))
         path = make_shortest_list(self.graph, self.graph.get_node(destination))
         return self.graph.get_node(destination).get_weight(), path
+
+    def TSP(self, node_lst: list[int]) -> (list[int], float):
+        return custom_search(self.graph, node_lst)
 
     def __repr__(self):
         return f"{self.graph}"
