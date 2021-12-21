@@ -2,15 +2,15 @@ from Edge import Edge
 
 
 class Node:
-    def __init__(self, id: int = -1, pos: tuple = None):
-        self.id = id
-        self.in_edges = {}
-        self.out_edges = {}
-        self.pos = pos
+    def __init__(self, _id: int = -1, pos: tuple = None):
+        self.id: int = _id
+        self.in_edges: dict = {}
+        self.out_edges: dict = {}
+        self.pos: tuple = pos
 
         # for GraphAlgo
-        self.weight = 0
-        self.tag = 0
+        self.weight: float = 0
+        self.tag: int = 0
         #
 
     def get_id(self):

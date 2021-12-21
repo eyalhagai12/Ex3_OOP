@@ -4,21 +4,6 @@ from FibHeap import FibonacciHeap
 from Node import Node
 from DiGraph import DiGraph
 
-if __name__ == '__main__':
-    f = FibonacciHeap()
-    n1 = Node(0, (1, 1))
-    n1.set_weight(15)
-    n2 = Node(1, (2, 2))
-    n2.set_weight(2)
-    n3 = Node(2, (3, 3))
-    n3.set_weight(4)
-    n4 = Node(3, (4, 4))
-    n4.set_weight(7)
-    f.insert(n1.get_weight(), value=n1)
-    f.insert(n2.get_weight(), vauen2)
-    f.insert(n3.get_weight(), n3)
-    f.insert(n4.get_weight(), n4)
-
 
 def infinity_weights(graph: DiGraph):
     for node in graph.get_all_v().values():
@@ -26,8 +11,13 @@ def infinity_weights(graph: DiGraph):
 
 
 def reset_weights(graph: DiGraph):
-    for node in graph.get_all_v():
+    for node in graph.get_all_v().values():
         node.set_weight(0)
+
+
+def reset_tags(graph: DiGraph):
+    for node in graph.get_all_v().values():
+        node.set_tag(0)
 
 
 def dijkstra(graph: DiGraph, source: Node):
@@ -48,6 +38,7 @@ def dijkstra(graph: DiGraph, source: Node):
         for edge in temp_edges.values():
             if graph.get_node(edge.get_dst()).get_tag() != 1:
                 heap.insert(graph.get_node(edge.get_dst()).get_weight(), graph.get_node(edge.get_dst()))
+    reset_tags(graph)
 
 
 def find_max_distance(graph: DiGraph, source: Node):
@@ -58,4 +49,5 @@ def find_max_distance(graph: DiGraph, source: Node):
         if node.get_weight() > max_weight:
             max_weight = node.get_weight()
             index = node.get_id()
+            x = str(type(index))
     return index

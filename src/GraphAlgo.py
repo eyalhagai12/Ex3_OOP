@@ -25,7 +25,8 @@ class GraphAlgo(GraphAlgoInterface):
             _dict = json.load(f)
         for n in _dict["Nodes"]:
             position = n["pos"].split(",")
-            graph_res.add_node(n["id"], pos=(position[0], position[1]))
+            idd = n["id"]
+            graph_res.add_node(node_id=idd, pos=(position[0], position[1]))
         for edge in _dict["Edges"]:
             graph_res.add_edge(edge["src"], edge["dest"], edge["w"])
         self.graph = graph_res
@@ -33,11 +34,13 @@ class GraphAlgo(GraphAlgoInterface):
     def centerPoint(self) -> (int, float):
         weights = []
         for node in self.graph.get_all_v().values():
+            reset_weights(self.graph)
             node_id = find_max_distance(self.graph, node)
-            temppp = self.graph.get_node(node_id)
             weights.append((node_id, self.graph.get_node(node_id).get_weight()))
-        index = min(np.array(weights)[:, 1].astype(int))
-        weight = self.graph.get_node(index)
+        arr = np.array(weights)[:, 1].astype(float)
+        min_value = min(arr)
+        index = [x[1] for x in weights].index(min_value)
+        weight = weights[index][1]
         return index, weight
 
     def __repr__(self):
@@ -48,4 +51,3 @@ if __name__ == "__main__":
     g_algo = GraphAlgo(DiGraph())
     g_algo.load_from_json("../data/A0.json")
     print(g_algo.centerPoint())
-

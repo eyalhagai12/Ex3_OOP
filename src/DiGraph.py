@@ -26,22 +26,12 @@ class DiGraph(GraphInterface):
         for edge in self.nodes[id1].get_in_edges().values():
             out[edge.get_src()] = edge.get_weight()
         return out
-        ###
-        # out = {}
-        # for edge in self.nodes[id1].get_in_edges():
-        #     out[edge.get_src()] = edge.get_weight()
-        # return out
 
     def all_out_edges_of_node(self, id1: int):
         out = {}
         for edge in self.nodes[id1].get_out_edges().values():
             out[edge.get_dst()] = edge.get_weight()
         return out
-        ###
-        # out = {}
-        # for edge in self.nodes[id1].get_out_edges():
-        #     out[edge.get_dst()] = edge.get_weight()
-        # return out
 
     def get_mc(self):
         return self.mc
@@ -64,7 +54,7 @@ class DiGraph(GraphInterface):
         if node_id in self.nodes.keys():
             return False
         else:
-            self.nodes[node_id] = Node((node_id, pos))
+            self.nodes[node_id] = Node(node_id, pos)
             self.mc += 1
             return True
 

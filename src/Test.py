@@ -109,5 +109,13 @@ class DiGraphTestCase(unittest.TestCase):
         self.assertTrue(len(graph.nodes[1].get_out_edges()) == 1)
 
 
+class GraphAlgoTestCase(unittest.TestCase):
+    def test_load_from_json(self):
+        g_algo = GraphAlgo(DiGraph())
+        g_algo.load_from_json("../data/A0.json")
+        self.assertEqual(g_algo.__repr__(), "Graph: |V|=11 , |E|=22")
+        self.assertEqual(g_algo.get_graph().get_all_v()[0].get_id(), 0)
+
+
 if __name__ == '__main__':
     unittest.main()
