@@ -1,3 +1,4 @@
+import copy
 from GraphInterface import GraphInterface
 from Node import Node
 from Edge import Edge
@@ -20,6 +21,13 @@ class DiGraph(GraphInterface):
 
     def get_node(self, _id: int):
         return self.nodes[_id]
+
+    def __copy__(self):
+        c = DiGraph()
+        c.nodes = copy.deepcopy(self.nodes)
+        c.edges = copy.deepcopy(self.edges)
+        c.mc = copy.deepcopy(self.mc)
+        return c
 
     def all_in_edges_of_node(self, id1: int):
         out = {}

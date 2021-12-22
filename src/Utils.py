@@ -1,7 +1,9 @@
 import math
 from collections import OrderedDict
 
-from FibHeap import FibonacciHeap
+# from FibHeap import FibonacciHeap
+from heapq import heappush
+from heapq import heappop
 from Node import Node
 from DiGraph import DiGraph
 
@@ -34,12 +36,12 @@ def reset_all(graph: DiGraph):
 
 
 def dijkstra(graph: DiGraph, source: Node):
-    heap = FibonacciHeap()
+    heap = []
     infinity_weights(graph)
     source.set_weight(0)
-    heap.insert_node(source)
-    while heap.trees:
-        temp = heap.extract_min()
+    heappush(heap, source)
+    while heap:
+        temp = heappop(heap)
         if temp.get_tag() == 1:
             continue
         temp_edges = temp.get_out_edges()
@@ -53,7 +55,7 @@ def dijkstra(graph: DiGraph, source: Node):
         for edge in temp_edges.values():
             if graph.get_node(edge.get_dst()).get_tag() != 1:
                 next_node = graph.get_node(edge.get_dst())
-                heap.insert_node(value=next_node)
+                heappush(heap, next_node)
 
         temp.set_tag(1)
     reset_tags(graph)
@@ -68,6 +70,21 @@ def find_max_distance(graph: DiGraph, source: Node):
             max_weight = node.get_weight()
             index = node.get_id()
     return index
+
+
+def threaded_find_max_distance(graph: DiGraph, ids: list, weights: list):
+    res = []
+    for idd in ids:
+        source = idd
+        dijkstra(graph, source)
+        max_weight = -math.inf
+        index = -1
+        for node in graph.get_all_v().values():
+            if node.get_weight() > max_weight:
+                max_weight = node.get_weight()
+                index = node.get_id()
+        res.append((index, graph.get_node(index).get_weight()))
+    weights.extend(res)
 
 
 def make_shortest_list(graph: DiGraph, destination: Node):

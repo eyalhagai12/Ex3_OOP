@@ -1,5 +1,6 @@
 import json
 import numpy as np
+import threading
 
 from GraphAlgoInterface import GraphAlgoInterface
 from GraphInterface import GraphInterface
@@ -32,17 +33,19 @@ class GraphAlgo(GraphAlgoInterface):
         self.graph = graph_res
 
     def centerPoint(self) -> (int, float):
-        reset_all(self.graph)
-        weights = []
+        max_nodes = []
+        min_weight = math.inf
+        index = -1
         for node in self.graph.get_all_v().values():
-            reset_weights(self.graph)
+            reset_all(self.graph)
             node_id = find_max_distance(self.graph, node)
-            weights.append((node_id, self.graph.get_node(node_id).get_weight()))
-        arr = np.array(weights)[:, 1].astype(float)
-        min_value = min(arr)
-        index = [x[1] for x in weights].index(min_value)
-        weight = weights[index][1]
-        return index, weight
+            temp = self.graph.get_node(node_id)
+            max_nodes.append(temp)
+            if min_weight > temp.get_weight():
+                min_weight = temp.get_weight()
+                index = node.get_id()
+
+        return index, min_weight
 
     def shortest_path(self, source: int, destination: int) -> (float, list):
         reset_all(self.graph)
