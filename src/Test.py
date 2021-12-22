@@ -1,4 +1,5 @@
 import unittest
+import warnings
 
 from Node import Node
 from Edge import Edge
@@ -147,6 +148,16 @@ class GraphAlgoTestCase(unittest.TestCase):
         self.assertEqual(g_algo.centerPoint(), (6, 8.071366078651435))
         g_algo.load_from_json("../data/A5.json")
         self.assertEqual(g_algo.centerPoint(), (40, 9.291743173960954))
+
+    def test_plot_graph(self):
+        g_algo = GraphAlgo(DiGraph())
+        for i in range(0, 6):
+            g_algo.load_from_json(f"../data/A{i}.json")
+            g_algo.plot_graph()
+            self.assertTrue(True)
+        g_algo.load_from_json("../data/T0.json")
+        g_algo.plot_graph()
+        self.assertTrue(True)
 
 
 if __name__ == '__main__':

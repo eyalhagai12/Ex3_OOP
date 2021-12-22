@@ -1,6 +1,6 @@
 import json
-import numpy as np
-import threading
+import matplotlib.pyplot as plt
+import warnings
 
 from GraphAlgoInterface import GraphAlgoInterface
 from GraphInterface import GraphInterface
@@ -39,9 +39,16 @@ class GraphAlgo(GraphAlgoInterface):
         with open(file, "r") as f:
             _dict = json.load(f)
         for n in _dict["Nodes"]:
-            position = n["pos"].split(",")
-            idd = n["id"]
-            graph_res.add_node(node_id=idd, pos=(position[0], position[1]))
+            if "id" in n.keys() and "pos" in n.keys():
+                position = n["pos"].split(",")
+                idd = n["id"]
+                graph_res.add_node(node_id=idd, pos=(float(position[0]), float(position[1])))
+            else:
+                if "id" in n.keys():
+                    idd = n["id"]
+                    graph_res.add_node(node_id=idd, pos=None)
+                else:
+                    graph_res.add_node(node_id=None, pos=None)
         for edge in _dict["Edges"]:
             graph_res.add_edge(edge["src"], edge["dest"], edge["w"])
         self.graph = graph_res
@@ -88,6 +95,35 @@ class GraphAlgo(GraphAlgoInterface):
         @returns A list of the nodes id's in the path, and the overall distance
         """
         return custom_search(self.graph, node_lst)
+
+    def plot_graph(self) -> None:
+        # if graph's node have no position, generate position for them
+        handle_empty_graph(self.graph)
+        fig = plt.figure()
+        axes = fig.add_axes([0, 0, 1, 1])
+        nodes = self.graph.get_all_v().values()
+        x = []
+        y = []
+        x = [z.pos[0] for z in nodes]
+        y = [-z.pos[1] for z in nodes]
+        for node in nodes:
+            axes.text(node.pos[0], node.pos[1], node.get_id(),
+                      va='top',
+                      ha='right',
+                      color='blue',
+                      fontsize=9,
+                      bbox=dict(boxstyle='square, pad=0.2', ec='gray', fc='pink', alpha=0.65),
+                      zorder=99)
+            plt.annotate("",
+                         xy=(node.pos[0], node.pos[1]),
+                         xytext=(x, y),
+                         arrowprops=dict(arrowstyle="->", color='black')
+                         )
+        plt.xticks([])
+        plt.yticks([])
+        plt.scatter(x, y, color='red')
+        plt.show()
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
 
     def __repr__(self):
         return f"{self.graph}"

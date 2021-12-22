@@ -1,7 +1,7 @@
 import math
-from collections import OrderedDict
+import random
 
-# from FibHeap import FibonacciHeap
+from collections import OrderedDict
 from heapq import heappush
 from heapq import heappop
 from Node import Node
@@ -163,7 +163,32 @@ def add_closest(graph: DiGraph, src: Node, cities: list, result: list):
                 best_node = node
 
     if best_node is not None:
-        path = make_shortest_list(graph, best_node)
+        path = make_shortest_list(best_node)
         result.extend(path)
 
     return best_node, min_dist
+
+
+def handle_empty_graph(graph: DiGraph):
+    nodes = list(graph.get_all_v().values())
+    node_with_pos = None
+    for node in nodes:
+        if node.pos:
+            node_with_pos = node
+            break
+
+    # if no nodes have pos, generate pos for initial node
+    if node_with_pos is None:
+        nodes[0].pos = (1, 1)
+        node_with_pos = nodes[0]
+
+    for node in nodes:
+        if not node.pos:
+            gen_loc(node, node_with_pos.pos)
+
+
+def gen_loc(node: Node, loc: tuple):
+    eps = random.uniform(0, 0.5)
+    x = random.uniform(loc[0] - eps, loc[0] + eps)
+    y = random.uniform(loc[1] - eps, loc[1] + eps)
+    node.pos = (x, y)
