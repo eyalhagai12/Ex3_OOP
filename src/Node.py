@@ -42,12 +42,24 @@ class Node:
         return self.out_edges
 
     def add_in_edge(self, e: Edge):
+        """
+        @param e: edge to add
+        Adds edge into in_edges
+        """
         self.in_edges[e.get_src()] = e
 
     def add_out_edge(self, e: Edge):
+        """
+        @param e: edge to add
+        Adds edge into out_edges
+        """
         self.out_edges[e.get_dst()] = e
 
     def remove_out_edge(self, dst: int):
+        """
+        @param dst: index of edge to remove
+        removes edge from out_edges
+        """
         if dst not in self.out_edges.keys():
             return False
         else:
@@ -55,12 +67,17 @@ class Node:
             return True
 
     def remove_in_edge(self, src: int):
+        """
+        @param src: index of edge to remove
+        removes edge from in_edges
+        """
         if src not in self.in_edges.keys():
             return False
         else:
             del self.in_edges[src]
             return True
 
+    # comparing operators
     def __lt__(self, other):
         return self.weight < other.weight
 

@@ -9,26 +9,46 @@ from DiGraph import DiGraph
 
 
 def infinity_weights(graph: DiGraph):
+    """
+    @param graph
+    Sets all graph's nodes' weights to math.inf
+    """
     for node in graph.get_all_v().values():
         node.set_weight(math.inf)
 
 
 def reset_weights(graph: DiGraph):
+    """
+    @param graph
+    Sets all graph's nodes' weights to 0
+    """
     for node in graph.get_all_v().values():
         node.set_weight(0)
 
 
 def reset_tags(graph: DiGraph):
+    """
+    @param graph
+    Sets all graph's nodes' tags to 0
+    """
     for node in graph.get_all_v().values():
         node.set_tag(0)
 
 
 def reset_info(graph: DiGraph):
+    """
+    @param graph
+    Sets all graph's nodes' weights to math.inf
+    """
     for node in graph.get_all_v().values():
         node.set_info(None)
 
 
 def reset_all(graph: DiGraph):
+    """
+    @param graph
+    Sets all graph's nodes' weights, tags, and info to to 0, 0, None
+    """
     for node in graph.get_all_v().values():
         node.set_weight(0)
         node.set_tag(0)
@@ -36,6 +56,12 @@ def reset_all(graph: DiGraph):
 
 
 def dijkstra(graph: DiGraph, source: Node):
+    """
+    @param graph
+    @param source: source node
+    Computes minimum distance of all nodes from source node
+    result is saved into the other node's weight (not the source node)
+    """
     heap = []
     infinity_weights(graph)
     source.set_weight(0)
@@ -62,6 +88,12 @@ def dijkstra(graph: DiGraph, source: Node):
 
 
 def find_max_distance(graph: DiGraph, source: Node):
+    """
+    @param graph
+    @param source: source node
+    @returns index
+    Finds the farthest node from source node and returns its index
+    """
     dijkstra(graph, source)
     max_weight = -math.inf
     index = -1
@@ -87,7 +119,12 @@ def threaded_find_max_distance(graph: DiGraph, ids: list, weights: list):
     weights.extend(res)
 
 
-def make_shortest_list(graph: DiGraph, destination: Node):
+def make_shortest_list(destination: Node):
+    """
+    @param destination: last connected node
+    @returns x: list that represents the shortest path from a destination's source node to itself
+    Creates a list that represents the shortest path from a destination's source node to itself
+    """
     x = []
     parent = destination.get_info()
     while parent is not None:
