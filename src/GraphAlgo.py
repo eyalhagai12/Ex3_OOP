@@ -102,26 +102,28 @@ class GraphAlgo(GraphAlgoInterface):
         fig = plt.figure()
         axes = fig.add_axes([0, 0, 1, 1])
         nodes = self.graph.get_all_v().values()
-        x = []
-        y = []
         x = [z.pos[0] for z in nodes]
         y = [-z.pos[1] for z in nodes]
         for node in nodes:
-            axes.text(node.pos[0], node.pos[1], node.get_id(),
+            axes.text(node.pos[0], -node.pos[1], node.get_id(),
                       va='top',
                       ha='right',
-                      color='blue',
+                      color='black',
                       fontsize=9,
-                      bbox=dict(boxstyle='square, pad=0.2', ec='gray', fc='pink', alpha=0.65),
-                      zorder=99)
-            plt.annotate("",
-                         xy=(node.pos[0], node.pos[1]),
-                         xytext=(x, y),
-                         arrowprops=dict(arrowstyle="->", color='black')
-                         )
-        plt.xticks([])
-        plt.yticks([])
-        plt.scatter(x, y, color='red')
+                      bbox=dict(boxstyle='square, pad=0.2', ec='gray', fc='cyan', alpha=0.65),
+                      zorder=99
+                      )
+            for edge in node.get_out_edges().values():
+                temp = self.graph.get_node(edge.get_dst())
+                axes.annotate("",
+                              xy=(node.pos[0], -node.pos[1]),
+                              xycoords='data',
+                              xytext=(temp.pos[0], -temp.pos[1]),
+                              textcoords='data',
+                              arrowprops=dict(arrowstyle="->",
+                                              connectionstyle="arc3"),
+                              )
+        plt.scatter(x=x, y=y, color='red')
         plt.show()
         warnings.filterwarnings("ignore", category=DeprecationWarning)
 
