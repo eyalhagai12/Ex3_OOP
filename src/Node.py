@@ -77,7 +77,9 @@ class Node:
             del self.in_edges[src]
             return True
 
-    # comparing operators
+    """
+    comparing operators
+    """
     def __lt__(self, other):
         return self.weight < other.weight
 

@@ -104,19 +104,19 @@ def find_max_distance(graph: DiGraph, source: Node):
     return index
 
 
-def threaded_find_max_distance(graph: DiGraph, ids: list, weights: list):
-    res = []
-    for idd in ids:
-        source = idd
-        dijkstra(graph, source)
-        max_weight = -math.inf
-        index = -1
-        for node in graph.get_all_v().values():
-            if node.get_weight() > max_weight:
-                max_weight = node.get_weight()
-                index = node.get_id()
-        res.append((index, graph.get_node(index).get_weight()))
-    weights.extend(res)
+# def threaded_find_max_distance(graph: DiGraph, ids: list, weights: list):
+#     res = []
+#     for idd in ids:
+#         source = idd
+#         dijkstra(graph, source)
+#         max_weight = -math.inf
+#         index = -1
+#         for node in graph.get_all_v().values():
+#             if node.get_weight() > max_weight:
+#                 max_weight = node.get_weight()
+#                 index = node.get_id()
+#         res.append((index, graph.get_node(index).get_weight()))
+#     weights.extend(res)
 
 
 def make_shortest_list(destination: Node):
@@ -170,6 +170,11 @@ def add_closest(graph: DiGraph, src: Node, cities: list, result: list):
 
 
 def handle_empty_graph(graph: DiGraph):
+    """
+    @param: graph
+    if a graph is "empty" (nodes without position), generate positions
+    and attach them to the relevant nodes
+    """
     nodes = list(graph.get_all_v().values())
     node_with_pos = None
     for node in nodes:
@@ -188,7 +193,12 @@ def handle_empty_graph(graph: DiGraph):
 
 
 def gen_loc(node: Node, loc: tuple):
-    eps = random.uniform(0, 0.5)
+    """
+    @param node
+    @param loc
+    generate a position to a node using a tuple
+    """
+    eps = random.uniform(0, 0.3)
     x = random.uniform(loc[0] - eps, loc[0] + eps)
     y = random.uniform(loc[1] - eps, loc[1] + eps)
     node.pos = (x, y)

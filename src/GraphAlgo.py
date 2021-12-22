@@ -97,6 +97,12 @@ class GraphAlgo(GraphAlgoInterface):
         return custom_search(self.graph, node_lst)
 
     def plot_graph(self) -> None:
+        """
+        Plots the graph.
+        If the nodes have a position, the nodes will be placed there.
+        Otherwise, they will be placed in a random but elegant manner.
+        @return: None
+          """
         # if graph's node have no position, generate position for them
         handle_empty_graph(self.graph)
         fig = plt.figure()
@@ -129,9 +135,3 @@ class GraphAlgo(GraphAlgoInterface):
 
     def __repr__(self):
         return f"{self.graph}"
-
-
-if __name__ == "__main__":
-    g_algo = GraphAlgo(DiGraph())
-    g_algo.load_from_json("../data/A1.json")
-    print(g_algo.centerPoint())
