@@ -23,10 +23,10 @@ class GraphAlgoTestCase(unittest.TestCase):
         g_algo.load_from_json("../data_test/G3.json")
         g_algo.save_to_json("../data_test/G3_py.json")
 
-        g_algo.load_from_json("../data_test/1000Nodes.json")
-        g_algo.save_to_json("../data_test/1000_py.json")
-        g_algo.load_from_json("../data_test/10000Nodes.json")
-        g_algo.save_to_json("../data_test/10000_py.json")
+        # g_algo.load_from_json("../data_test/1000Nodes.json")
+        # g_algo.save_to_json("../data_test/1000_py.json")
+        # g_algo.load_from_json("../data_test/10000Nodes.json")
+        # g_algo.save_to_json("../data_test/10000_py.json")
 
         self.assertTrue(True)
         print("save ", "{:.3f}".format(time.time() - start), "s")
@@ -38,8 +38,8 @@ class GraphAlgoTestCase(unittest.TestCase):
         g_algo.load_from_json("../data_test/G2.json")
         g_algo.load_from_json("../data_test/G3.json")
 
-        g_algo.load_from_json("../data_test/1000Nodes.json")
-        g_algo.load_from_json("../data_test/10000Nodes.json")
+        # g_algo.load_from_json("../data_test/1000Nodes.json")
+        # g_algo.load_from_json("../data_test/10000Nodes.json")
 
         self.assertTrue(True)
         print("load ", "{:.3f}".format(time.time() - start), "s")
@@ -70,10 +70,10 @@ class GraphAlgoTestCase(unittest.TestCase):
         g_algo.load_from_json("../data_test/G3.json")
         self.assertEqual(g_algo.centerPoint()[0], 40)
 
-        g_algo.load_from_json("../data_test/1000Nodes.json")
-        self.assertEqual(g_algo.centerPoint()[0], 362)
-        g_algo.load_from_json("../data_test/10000Nodes.json")
-        self.assertEqual(g_algo.centerPoint()[0], 3846)
+        # g_algo.load_from_json("../data_test/1000Nodes.json")
+        # self.assertEqual(g_algo.centerPoint()[0], 362)
+        # g_algo.load_from_json("../data_test/10000Nodes.json")
+        # self.assertEqual(g_algo.centerPoint()[0], 3846)
 
         print("center ", "{:.3f}".format(time.time() - start), "s")
 
