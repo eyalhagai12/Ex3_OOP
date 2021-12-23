@@ -1,10 +1,11 @@
 import unittest
-import warnings
 
+from os.path import exists
 from Node import Node
 from Edge import Edge
 from DiGraph import DiGraph
 from GraphAlgo import GraphAlgo
+from Utils import gen_loc
 
 
 class NodeTestCase(unittest.TestCase):
@@ -111,8 +112,17 @@ class DiGraphTestCase(unittest.TestCase):
 
 
 class GraphAlgoTestCase(unittest.TestCase):
+
     def test_save_to_json(self):
-        pass
+        g_algo = GraphAlgo(DiGraph())
+        graph = g_algo.get_graph()
+        for n in range(2):
+            graph.add_node(n)
+            gen_loc(graph.get_node(n), (1, 1))
+        graph.add_edge(0, 1, 1)
+        graph.add_edge(1, 0, 1.1)
+        self.assertTrue(g_algo.save_to_json("../data/test.json"))
+        self.assertTrue(exists("../data/test.json"))
 
     def test_load_from_json(self):
         g_algo = GraphAlgo(DiGraph())

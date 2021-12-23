@@ -25,9 +25,21 @@ class GraphAlgo(GraphAlgoInterface):
         @param file: The path to the out file
         @return: True if the save was successful, False o.w.
         """
-        with open(file, "w") as f:
-            json.dump(self, fp=f, indent=4, default=lambda x: x.__dict__)
-        return True
+        nodes = [node for node in self.graph.get_all_v().values()]
+        edges = [edge for edge in self.graph.edges.values()]
+        for i, node in enumerate(nodes):
+            temp = {"pos": f"{node.pos[0]},{node.pos[1]},0.0", "id": node.id}
+            nodes[i] = temp
+        for i, edge in enumerate(edges):
+            temp = {"src": edge.src, "w": edge.weight, "dest": edge.dst}
+            edges[i] = temp
+        j = {"Edges": edges, "Nodes": nodes}
+        try:
+            with open(file, 'w') as f:
+                json.dump(j, fp=f, indent=2)
+                return True
+        except (Exception,):
+            return False
 
     def load_from_json(self, file):
         """
