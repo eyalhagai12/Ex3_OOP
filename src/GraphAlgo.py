@@ -1,4 +1,7 @@
 import json
+import threading
+from multiprocessing import Process, Manager
+
 import matplotlib.pyplot as plt
 import warnings
 
@@ -25,6 +28,7 @@ class GraphAlgo(GraphAlgoInterface):
         @param file: The path to the out file
         @return: True if the save was successful, False o.w.
         """
+        handle_empty_graph(self.graph)
         nodes = [node for node in self.graph.get_all_v().values()]
         edges = [edge for edge in self.graph.edges.values()]
         for i, node in enumerate(nodes):
@@ -77,14 +81,38 @@ class GraphAlgo(GraphAlgoInterface):
         max_nodes = []
         min_weight = math.inf
         index = -1
-        for node in self.graph.get_all_v().values():
-            reset_all(self.graph)
-            node_id = find_max_distance(self.graph, node)
-            temp = self.graph.get_node(node_id)
-            max_nodes.append(temp)
-            if min_weight > temp.get_weight():
-                min_weight = temp.get_weight()
-                index = node.get_id()
+        total_nodes = list(self.graph.get_all_v().values())
+        length = len(total_nodes)
+        if length < 100:
+            for node in total_nodes:
+                reset_all(self.graph)
+                node_id = find_max_distance(self.graph, node)
+                temp = self.graph.get_node(node_id)
+                max_nodes.append(temp)
+                if min_weight > temp.get_weight():
+                    min_weight = temp.get_weight()
+                    index = node.get_id()
+
+        else:
+            max_nodes = Manager().list()
+            length = len(total_nodes)
+
+            sub_lists = []
+            processes = []
+            for i in range(1, 5):
+                temp = total_nodes[int(math.floor((i - 1) * (length / 4))): int(math.floor(i * (length / 4)))]
+                sub_lists.append(temp)
+                process = Process(target=threaded_find_max_distance,
+                                  args=(self.graph.__copy__(), temp, max_nodes))
+                processes.append(process)
+                process.start()
+            for process in processes:
+                process.join()
+
+            for value in max_nodes:
+                if min_weight > value[1]:
+                    min_weight = value[1]
+                    index = value[0].get_id()
 
         return index, min_weight
 

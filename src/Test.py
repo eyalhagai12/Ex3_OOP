@@ -1,3 +1,4 @@
+import math
 import unittest
 
 from os.path import exists
@@ -168,6 +169,11 @@ class GraphAlgoTestCase(unittest.TestCase):
         g_algo.load_from_json("../data/T0.json")
         g_algo.plot_graph()
         self.assertTrue(True)
+
+    def test_TSP(self):
+        g_algo = GraphAlgo(DiGraph())
+        g_algo.load_from_json("../data/A5.json")
+        self.assertNotEqual(g_algo.TSP([1, 2, 3]), (math.inf, []))
 
 
 if __name__ == '__main__':

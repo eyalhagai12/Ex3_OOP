@@ -94,6 +94,7 @@ def find_max_distance(graph: DiGraph, source: Node):
     @returns index
     Finds the farthest node from source node and returns its index
     """
+    reset_all(graph)
     dijkstra(graph, source)
     max_weight = -math.inf
     index = -1
@@ -104,19 +105,24 @@ def find_max_distance(graph: DiGraph, source: Node):
     return index
 
 
-# def threaded_find_max_distance(graph: DiGraph, ids: list, weights: list):
-#     res = []
-#     for idd in ids:
-#         source = idd
-#         dijkstra(graph, source)
-#         max_weight = -math.inf
-#         index = -1
-#         for node in graph.get_all_v().values():
-#             if node.get_weight() > max_weight:
-#                 max_weight = node.get_weight()
-#                 index = node.get_id()
-#         res.append((index, graph.get_node(index).get_weight()))
-#     weights.extend(res)
+def threaded_find_max_distance(graph: DiGraph, ids: list, weights: list):
+    """
+    @param graph
+    @param ids: source node
+    @param weights: empty list
+    Finds the farthest node from source node
+    and adds the source's index and farthest node's weight into the list
+    """
+    res = []
+    for idd in ids:
+        source = idd
+        dijkstra(graph, source)
+        max_weight = -math.inf
+        for node in graph.get_all_v().values():
+            if node.get_weight() > max_weight:
+                max_weight = node.get_weight()
+        res.append((source, max_weight))
+    weights.extend(res)
 
 
 def make_shortest_list(destination: Node):
