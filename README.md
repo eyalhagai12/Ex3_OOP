@@ -53,12 +53,10 @@ types of graphs.
 
 you can also add and remove vertices and edges simply with the GUI
 
-* **add node**: In the GUI, go to Edit -> add node, and press on the screen where you want to add that new node.
-* **remove node**: In the GUI, go to Edit -> remove node, and type the id of that node (the node's id is the blue number
-  that appears above it).
-* **add edge**: In the GUI, go to Edit -> add edge, and type "src,dest,weight" ("src" and "dest" are id's of the nodes
-  and weight is the weight of the graph).
-* **remove edge**: In the GUI, go to Edit -> remove node, and type "src,dest"
+* **add node**: FILL
+* **remove node**: FILL
+* **add edge**: FILL
+* **remove edge**: FILL
 
 ### Saving and Loading Graphs
 
