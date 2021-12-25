@@ -45,12 +45,6 @@ types of graphs.
   verices. it's very similar to the bellman-ford algorithm, but it also keeps track of the route that we went through to
   reach the destination node and how much did it "cost" (or what is the distance from te source node to the destination
   node).
-* **shortestPathDist**: This algorithm is used to find the distance between two vertices. This algorithm uses the
-  shortestPath algorithm and just returns the length of the route (the sum of the weights in the route).
-* **isConnected**: This function is used to check if the given graph is strongly connected. meaning that every vertex on
-  this graph can reach any other vertex in the graph (in other words, there is a path between every two vertices in the
-  graph). ths function uses topological sort to see if there is a vertex that all nodes can reach and that it can reach
-  all nodes.
 * **center**: This algorithm finds the center of the graph (if it exists, meaning if the graph is strongly connected).
   the center of a graph is the vertex that the distance from it to the farthest vertex from it is minimal. this
   algorithm uses djikstra's algorithm to find the farthest vertex from a given vertex.
@@ -71,9 +65,23 @@ you can also add and remove vertices and edges simply with the GUI
 * **saving**: To save a file go to File -> Save, then choose where to save your graph (graphs are saved in json format)
 * **loading**: To load a graph go to File -> load, then go to the directory of that json file and choose the wanted file
 
+# Sources
 
-   
-   
-   
-   
-   
+* **Dijkstra's algorithm**: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+
+# Runtimes
+
+The graphs that were tested in this test case are:
+
+* G1.json
+* G2.json
+* G3.json
+* 1,000Nodes.json (custom graph, could not upload to this repo because it was too big)
+* 10,000Nodes.json (custom graph, could not upload to this repo because it was too big)
+
+All graphs were tested at once. Runtime results are for the given graphs in the same order  
+Each test was executed immediately after the previous test was done.  
+**Results:**
+<p align="center">
+<img src="https://user-images.githubusercontent.com/77681248/147388322-cf95fa0e-8a7a-45f7-a617-a1b916d87924.png">
+</p>
