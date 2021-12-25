@@ -60,9 +60,8 @@ you can also add and remove vertices and edges simply with the GUI
 
 ### Saving and Loading Graphs
 
-* **saving**: To save a file go to File -> Save, then choose where to save your graph (graphs are saved in json format)
-* **loading**: To load a graph go to File -> load, then go to the directory of that json file and choose the wanted file
-
+* **saving**: FILL
+* **loading**: FILL
 # Sources
 
 * **Dijkstra's algorithm**: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
