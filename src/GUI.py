@@ -1,9 +1,9 @@
-# import and init pygame
+# imports
 import math
-
 import pygame
 import GraphAlgo
 from Button import Button
+from popup import PopUp
 
 b_width = 150
 b_height = 75
@@ -64,6 +64,8 @@ class GUI:
         self.press_counter = 0
         self.pressed_nodes = []
 
+        self.popup = PopUp()
+
     def run_gui(self):
         """
         Runs the GUI
@@ -89,6 +91,16 @@ class GUI:
                     self.pressed_nodes.append(self.node_pressed(pos))
                     if self.press_counter >= 2:
                         self.remove_edge_gui(self.pressed_nodes[0], self.pressed_nodes[1])
+                        self.pressed_nodes = []
+                        self.press_counter = 0
+                if event.type == pygame.MOUSEBUTTONDOWN and self.add_edge_flag:
+                    pos = pygame.mouse.get_pos()
+                    self.press_counter += 1
+                    self.pressed_nodes.append(self.node_pressed(pos))
+                    if self.press_counter >= 2:
+                        self.popup.pop()
+                        weight = self.popup.weight
+                        self.add_edge_gui(self.pressed_nodes[0], self.pressed_nodes[1], weight)
                         self.pressed_nodes = []
                         self.press_counter = 0
 
@@ -178,7 +190,8 @@ class GUI:
         Create the relevant buttons
         """
         b1 = Button(self.screen, "Add node", self.gui_font, b_width, b_height, (5, 5), 5, self.enable_add_node)
-        b2 = Button(self.screen, "Add edge", self.gui_font, b_width, b_height, (b_width + 5, 5), 5, self.add_edge_gui)
+        b2 = Button(self.screen, "Add edge", self.gui_font, b_width, b_height, (b_width + 5, 5), 5,
+                    self.enable_add_edge)
         b3 = Button(self.screen, "Remove node", self.gui_font, b_width, b_height, (2 * b_width + 5, 5), 5,
                     self.enable_remove_node)
         b4 = Button(self.screen, "Remove edge", self.gui_font, b_width, b_height, (3 * b_width + 5, 5), 5,
@@ -255,6 +268,17 @@ class GUI:
         self.pressed_nodes = []
         self.press_counter = 0
 
+    def enable_add_edge(self):
+        """
+        Enable add edge
+        """
+        self.add_edge_flag = True
+        self.remove_node_flag = False
+        self.add_node_flag = False
+        self.remove_edge_flag = False
+        self.pressed_nodes = []
+        self.press_counter = 0
+
     def add_node_gui(self, mouse_pos):
         """
         Add a new node to the graph using GUI
@@ -272,8 +296,12 @@ class GUI:
 
         self.add_node_flag = False
 
-    def add_edge_gui(self):
-        pass
+    def add_edge_gui(self, src, dest, weight):
+        if src != dest:
+            self.graph.add_edge(src, dest, weight)
+            self.add_edge_flag = False
 
     def remove_edge_gui(self, src, dest):
-        self.graph.remove_edge(src, dest)
+        if src != dest:
+            self.graph.remove_edge(src, dest)
+            self.remove_edge_flag = False
