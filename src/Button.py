@@ -53,7 +53,6 @@ class Button:
             else:
                 self.dynamic_allocation = self.elevation
                 if self.pressed:
-                    print('click')
                     self.pressed = False
                     self.func()
         else:

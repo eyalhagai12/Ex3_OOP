@@ -38,10 +38,14 @@ class GUI:
         self.algo = algo
         self.graph = algo.get_graph()
         self.points = {}
+        self.dots = {}
         self.buttons = []
 
         # flags
         self.add_node_flag = False
+        self.remove_node_flag = False
+        self.add_edge_flag = False
+        self.remove_edge_flag = False
 
         # create buttons
         self.create_buttons()
@@ -57,14 +61,17 @@ class GUI:
 
         self.last_id = self.graph.v_size()
 
+        self.press_counter = 0
+        self.pressed_nodes = []
+
     def run_gui(self):
         """
         Runs the GUI
         """
         # the main GUI loop
         running = True
-        while running:
 
+        while running:
             # monitor events
             for event in pygame.event.get():
                 # quit when closing window
@@ -73,6 +80,17 @@ class GUI:
                 if event.type == pygame.MOUSEBUTTONDOWN and self.add_node_flag:
                     pos = pygame.mouse.get_pos()
                     self.add_node_gui(pos)
+                if event.type == pygame.MOUSEBUTTONDOWN and self.remove_node_flag:
+                    pos = pygame.mouse.get_pos()
+                    self.remove_node_gui(pos)
+                if event.type == pygame.MOUSEBUTTONDOWN and self.remove_edge_flag:
+                    pos = pygame.mouse.get_pos()
+                    self.press_counter += 1
+                    self.pressed_nodes.append(self.node_pressed(pos))
+                    if self.press_counter >= 2:
+                        self.remove_edge_gui(self.pressed_nodes[0], self.pressed_nodes[1])
+                        self.pressed_nodes = []
+                        self.press_counter = 0
 
             # paint screen white
             self.screen.fill((255, 255, 255))
@@ -149,11 +167,11 @@ class GUI:
             # draw edge
             arrow(self.screen, (0, 0, 0), (0, 0, 0), p1, p2, 15)
 
-            # draw nodes
-            point_list = [point for point in self.points.values()]
-            for point in point_list:
-                # draw node
-                pygame.draw.circle(self.screen, (255, 0, 0), point, 10)
+        # draw nodes
+        point_list = [point for point in self.points.items()]
+        for key, point in point_list:
+            # draw node amd save keys
+            self.dots[key] = pygame.draw.circle(self.screen, (255, 0, 0), point, 10)
 
     def create_buttons(self):
         """
@@ -162,9 +180,9 @@ class GUI:
         b1 = Button(self.screen, "Add node", self.gui_font, b_width, b_height, (5, 5), 5, self.enable_add_node)
         b2 = Button(self.screen, "Add edge", self.gui_font, b_width, b_height, (b_width + 5, 5), 5, self.add_edge_gui)
         b3 = Button(self.screen, "Remove node", self.gui_font, b_width, b_height, (2 * b_width + 5, 5), 5,
-                    self.remove_node_gui)
-        b4 = Button(self.screen, "Remove node", self.gui_font, b_width, b_height, (3 * b_width + 5, 5), 5,
-                    self.remove_edge_gui)
+                    self.enable_remove_node)
+        b4 = Button(self.screen, "Remove edge", self.gui_font, b_width, b_height, (3 * b_width + 5, 5), 5,
+                    self.enable_remove_edge)
 
         self.buttons.append(b1)
         self.buttons.append(b2)
@@ -173,7 +191,7 @@ class GUI:
 
     def handle_buttons(self, draw=True):
         """
-        look for any press
+        look for any press on the buttons
         """
         # draw and handle buttons
         if draw:
@@ -181,16 +199,65 @@ class GUI:
                 button.check_click()
                 button.draw()
 
+    def node_pressed(self, mouse_pos):
+        """
+        Detect if a node was pressed at that moment
+        """
+        for node in self.dots.values():
+            if node.collidepoint(mouse_pos):
+                if pygame.mouse.get_pressed()[0]:
+                    keys = [k for k, v in self.dots.items() if v == node]
+                    key = keys[0]
+                    return key
+
+    def remove_node_gui(self, mouse_pos):
+        """
+        Remove a node from the graph using GUI
+        """
+        key = self.node_pressed(mouse_pos)
+        if key is not None:
+            self.graph.remove_node(key)
+            self.points.pop(key)
+            self.dots.pop(key)
+            print(f"Removed node: {key}")
+            self.remove_node_flag = False
+
     def enable_add_node(self):
         """
-        Enable add node function to run
+        Enable add node
         """
         self.add_node_flag = True
+        self.remove_node_flag = False
+        self.remove_edge_flag = False
+        self.add_edge_flag = False
+        self.pressed_nodes = []
+        self.press_counter = 0
+
+    def enable_remove_node(self):
+        """
+        Enable remove node
+        """
+        self.remove_node_flag = True
+        self.add_node_flag = False
+        self.remove_edge_flag = False
+        self.add_edge_flag = False
+        self.pressed_nodes = []
+        self.press_counter = 0
+
+    def enable_remove_edge(self):
+        """
+        Enable remove edge
+        """
+        self.remove_edge_flag = True
+        self.remove_node_flag = False
+        self.add_node_flag = False
+        self.add_edge_flag = False
+        self.pressed_nodes = []
+        self.press_counter = 0
 
     def add_node_gui(self, mouse_pos):
         """
-        Add a new node to the graph
-            y = (y / (max_y - min_y)) * height * 0.8 + (height * 0.1)
+        Add a new node to the graph using GUI
         """
         x = ((mouse_pos[0] - (self.width * 0.1)) / (self.width * 0.8)) * (self.max_x - self.min_x)
         y = ((mouse_pos[1] - (self.height * 0.1)) / (self.height * 0.8)) * (self.max_y - self.min_y)
@@ -208,8 +275,5 @@ class GUI:
     def add_edge_gui(self):
         pass
 
-    def remove_node_gui(self):
-        pass
-
-    def remove_edge_gui(self):
-        pass
+    def remove_edge_gui(self, src, dest):
+        self.graph.remove_edge(src, dest)

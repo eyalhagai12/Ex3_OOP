@@ -147,14 +147,16 @@ class DiGraph(GraphInterface):
         if node_id1 not in self.nodes.keys() or node_id2 not in self.nodes.keys():
             return False
         else:
-            _id = self.nodes[node_id1].out_edges[node_id2].get_id()
-            del self.edges[_id]
+            if self.nodes[node_id1].out_edges[node_id2] is not None:
+                _id = self.nodes[node_id1].out_edges[node_id2].get_id()
+                del self.edges[_id]
 
-            self.nodes[node_id1].remove_out_edge(node_id2)
-            self.nodes[node_id2].remove_in_edge(node_id1)
+                self.nodes[node_id1].remove_out_edge(node_id2)
+                self.nodes[node_id2].remove_in_edge(node_id1)
 
-            self.mc += 1
-            return True
+                self.mc += 1
+                return True
+            return False
 
     def __repr__(self):
         return f"Graph: |V|={len(self.nodes)} , |E|={len(self.edges)}"
