@@ -31,6 +31,9 @@ class DiGraph(GraphInterface):
         """
         return self.nodes
 
+    def get_edges(self):
+        return self.edges
+
     def get_node(self, _id: int):
         return self.nodes[_id]
 

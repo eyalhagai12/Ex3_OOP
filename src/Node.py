@@ -17,6 +17,9 @@ class Node:
     def get_id(self):
         return self.id
 
+    def get_pos(self):
+        return self.pos
+
     def set_weight(self, w: float):
         self.weight = w
 
@@ -80,6 +83,7 @@ class Node:
     """
     comparing operators
     """
+
     def __lt__(self, other):
         return self.weight < other.weight
 

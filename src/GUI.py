@@ -112,7 +112,7 @@ class GUI:
             self.points[node.get_id()] = point
 
         # draw edges
-        edges = self.graph.get_edges()
+        edges = self.graph.get_edges().values()
 
         for edge in edges:
             # get points

@@ -1,5 +1,7 @@
 from DiGraph import DiGraph
 from GraphAlgo import GraphAlgo
+import sys
+from GUI import GUI
 
 
 def check():
@@ -105,5 +107,14 @@ def check3():
     g_algo.plot_graph()
 
 
+def main():
+    graph_path = "../data_test/G1.json"
+    print(graph_path)
+    algo = GraphAlgo(DiGraph())
+    algo.load_from_json(graph_path)
+    gui = GUI(algo)
+    gui.run_gui()
+
+
 if __name__ == '__main__':
-    check()
+    main()
