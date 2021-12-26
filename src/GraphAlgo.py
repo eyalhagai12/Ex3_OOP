@@ -13,7 +13,7 @@ from Utils import *
 
 
 class GraphAlgo(GraphAlgoInterface):
-    def __init__(self, g: DiGraph = None):
+    def __init__(self, g: DiGraph = DiGraph()):
         self.graph = g
 
     def get_graph(self) -> GraphInterface:
