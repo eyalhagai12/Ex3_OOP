@@ -108,7 +108,7 @@ def check3():
 
 
 def main():
-    graph_path = "../data_test/G1.json"
+    graph_path = sys.argv[1]
     print(graph_path)
     algo = GraphAlgo(DiGraph())
     algo.load_from_json(graph_path)

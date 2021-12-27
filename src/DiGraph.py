@@ -37,6 +37,12 @@ class DiGraph(GraphInterface):
     def get_node(self, _id: int):
         return self.nodes[_id]
 
+    def get_edge(self, src, dest):
+        if dest == src:
+            return None
+
+        return self.nodes[src].get_out_edges()[dest]
+
     def __copy__(self):
         c = DiGraph()
         c.nodes = copy.deepcopy(self.nodes)

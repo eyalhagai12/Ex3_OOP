@@ -152,8 +152,8 @@ def custom_search(graph: DiGraph, cities: list):
         best_node = n
         if d is not math.inf:
             overall_distance += d
-    temp = result
-    result = list(OrderedDict.fromkeys(result))
+    # temp = result
+    # result = list(OrderedDict.fromkeys(result))
     return result, overall_distance
 
 

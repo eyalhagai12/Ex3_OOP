@@ -6,7 +6,7 @@ from Button import Button
 from popup import PopUp
 
 b_width = 150
-b_height = 75
+b_height = 50
 
 
 def arrow(screen, lcolor, tricolor, start, end, trirad, thickness=2):
@@ -46,6 +46,11 @@ class GUI:
         self.remove_node_flag = False
         self.add_edge_flag = False
         self.remove_edge_flag = False
+        self.center_flag = False
+        self.tsp_flag = False
+        self.Shortest_path_flag = False
+        self.show_path = False
+        self.done = False
 
         # create buttons
         self.create_buttons()
@@ -65,6 +70,10 @@ class GUI:
         self.pressed_nodes = []
 
         self.popup = PopUp()
+
+        self.center_index = -1
+
+        self.path = []
 
     def run_gui(self):
         """
@@ -87,22 +96,47 @@ class GUI:
                     self.remove_node_gui(pos)
                 if event.type == pygame.MOUSEBUTTONDOWN and self.remove_edge_flag:
                     pos = pygame.mouse.get_pos()
-                    self.press_counter += 1
-                    self.pressed_nodes.append(self.node_pressed(pos))
+                    node = self.node_pressed(pos)
+                    if node is not None:
+                        self.press_counter += 1
+                        self.pressed_nodes.append(node)
                     if self.press_counter >= 2:
                         self.remove_edge_gui(self.pressed_nodes[0], self.pressed_nodes[1])
                         self.pressed_nodes = []
                         self.press_counter = 0
                 if event.type == pygame.MOUSEBUTTONDOWN and self.add_edge_flag:
                     pos = pygame.mouse.get_pos()
-                    self.press_counter += 1
-                    self.pressed_nodes.append(self.node_pressed(pos))
+                    node = self.node_pressed(pos)
+                    if node is not None:
+                        self.press_counter += 1
+                        self.pressed_nodes.append(node)
                     if self.press_counter >= 2:
                         self.popup.pop()
                         weight = self.popup.weight
                         self.add_edge_gui(self.pressed_nodes[0], self.pressed_nodes[1], weight)
                         self.pressed_nodes = []
                         self.press_counter = 0
+                if event.type == pygame.MOUSEBUTTONDOWN and self.Shortest_path_flag:
+                    pos = pygame.mouse.get_pos()
+                    node = self.node_pressed(pos)
+                    if node is not None:
+                        self.press_counter += 1
+                        self.pressed_nodes.append(node)
+                    if self.press_counter >= 2:
+                        self.shortest_path_gui(self.pressed_nodes[0], self.pressed_nodes[1])
+                        self.pressed_nodes = []
+                        self.press_counter = 0
+                if (event.type == pygame.MOUSEBUTTONDOWN and self.tsp_flag) or self.done:
+                    pos = pygame.mouse.get_pos()
+                    node = self.node_pressed(pos)
+                    if node is not None:
+                        self.pressed_nodes.append(node)
+                    if self.done:
+                        self.tsp_gui(self.pressed_nodes)
+                        self.pressed_nodes = []
+                        self.press_counter = 0
+                if event.type == pygame.KEYDOWN and self.tsp_flag and not self.done:
+                    self.done = not self.done
 
             # paint screen white
             self.screen.fill((255, 255, 255))
@@ -179,11 +213,25 @@ class GUI:
             # draw edge
             arrow(self.screen, (0, 0, 0), (0, 0, 0), p1, p2, 15)
 
+        if self.show_path:
+            # draw shortest path
+            for i in range(len(self.path) - 1):
+                edge = self.graph.get_edge(self.path[i], self.path[i + 1])
+                if edge is not None:
+                    p1 = self.points[edge.get_src()]
+                    p2 = self.points[edge.get_dst()]
+
+                    # draw edge
+                    arrow(self.screen, (0, 255, 0), (0, 255, 0), p1, p2, 20)
+
         # draw nodes
         point_list = [point for point in self.points.items()]
         for key, point in point_list:
             # draw node amd save keys
-            self.dots[key] = pygame.draw.circle(self.screen, (255, 0, 0), point, 10)
+            if key == self.center_index:
+                self.dots[key] = pygame.draw.circle(self.screen, (0, 255, 0), point, 10)
+            else:
+                self.dots[key] = pygame.draw.circle(self.screen, (255, 0, 0), point, 10)
 
     def create_buttons(self):
         """
@@ -196,11 +244,20 @@ class GUI:
                     self.enable_remove_node)
         b4 = Button(self.screen, "Remove edge", self.gui_font, b_width, b_height, (3 * b_width + 5, 5), 5,
                     self.enable_remove_edge)
+        b5 = Button(self.screen, "Shortest Path", self.gui_font, b_width, b_height, (4 * b_width + 5, 5), 5,
+                    self.enable_shortest_path)
+        b6 = Button(self.screen, "TSP", self.gui_font, b_width, b_height, (5 * b_width + 5, 5), 5,
+                    self.enable_tsp)
+        b7 = Button(self.screen, "Center", self.gui_font, b_width, b_height, (6 * b_width + 5, 5), 5,
+                    self.center_gui)
 
         self.buttons.append(b1)
         self.buttons.append(b2)
         self.buttons.append(b3)
         self.buttons.append(b4)
+        self.buttons.append(b5)
+        self.buttons.append(b6)
+        self.buttons.append(b7)
 
     def handle_buttons(self, draw=True):
         """
@@ -239,45 +296,60 @@ class GUI:
         """
         Enable add node
         """
+        self.reset_flags()
+        self.center_flag = False
         self.add_node_flag = True
-        self.remove_node_flag = False
-        self.remove_edge_flag = False
-        self.add_edge_flag = False
-        self.pressed_nodes = []
-        self.press_counter = 0
 
     def enable_remove_node(self):
         """
         Enable remove node
         """
+        self.reset_flags()
+        self.center_flag = False
         self.remove_node_flag = True
-        self.add_node_flag = False
-        self.remove_edge_flag = False
-        self.add_edge_flag = False
-        self.pressed_nodes = []
-        self.press_counter = 0
 
     def enable_remove_edge(self):
         """
         Enable remove edge
         """
+        self.reset_flags()
+        self.center_flag = False
         self.remove_edge_flag = True
-        self.remove_node_flag = False
-        self.add_node_flag = False
-        self.add_edge_flag = False
-        self.pressed_nodes = []
-        self.press_counter = 0
 
     def enable_add_edge(self):
         """
         Enable add edge
         """
+        self.reset_flags()
+        self.center_flag = False
         self.add_edge_flag = True
-        self.remove_node_flag = False
-        self.add_node_flag = False
-        self.remove_edge_flag = False
-        self.pressed_nodes = []
-        self.press_counter = 0
+
+    def enable_shortest_path(self):
+        """
+        Enable shortest path
+        """
+        self.reset_flags()
+        self.center_flag = False
+        self.Shortest_path_flag = True
+
+    def enable_tsp(self):
+        """
+        Enable shortest path
+        """
+        self.reset_flags()
+        self.center_flag = False
+        self.tsp_flag = True
+
+    def center_gui(self):
+        """
+        run center using GUI
+        """
+        self.reset_flags()
+        self.center_flag = not self.center_flag
+        if self.center_flag:
+            self.center_index, _ = self.algo.centerPoint()
+        else:
+            self.center_index = -1
 
     def add_node_gui(self, mouse_pos):
         """
@@ -297,11 +369,46 @@ class GUI:
         self.add_node_flag = False
 
     def add_edge_gui(self, src, dest, weight):
+        """
+        Add an edge using GUI
+        """
         if src != dest:
             self.graph.add_edge(src, dest, weight)
             self.add_edge_flag = False
 
     def remove_edge_gui(self, src, dest):
+        """
+        Remove an edge using GUI
+        """
         if src != dest:
             self.graph.remove_edge(src, dest)
             self.remove_edge_flag = False
+
+    def shortest_path_gui(self, n1, n2):
+        """
+        Find the shortest path using GUI
+        """
+        if n1 != n2:
+            _, self.path = self.algo.shortest_path(n1, n2)
+            self.show_path = True
+            self.Shortest_path_flag = False
+
+    def tsp_gui(self, cities):
+        """
+        Use TSP algorithm with GUI
+        """
+        self.path, _ = self.algo.TSP(cities)
+        self.show_path = True
+        self.done = False
+        self.tsp_flag = False
+
+    def reset_flags(self):
+        self.add_node_flag = False
+        self.remove_node_flag = False
+        self.add_edge_flag = False
+        self.remove_edge_flag = False
+        self.tsp_flag = False
+        self.Shortest_path_flag = False
+        self.show_path = False
+        self.center_index = -1
+        self.path = []
