@@ -4,9 +4,10 @@ import pygame
 import GraphAlgo
 from Button import Button
 from popup import PopUp
+from tkinter import filedialog
 
-b_width = 150
-b_height = 50
+b_width = 120
+b_height = 45
 
 
 def arrow(screen, lcolor, tricolor, start, end, trirad, thickness=2):
@@ -32,7 +33,7 @@ class GUI:
         """
         pygame.init()
 
-        self.gui_font = pygame.font.Font(None, 30)
+        self.gui_font = pygame.font.Font(None, 20)
         self.screen = pygame.display.set_mode([1500, 900], pygame.RESIZABLE)
 
         self.algo = algo
@@ -147,7 +148,6 @@ class GUI:
 
             # update display
             pygame.display.flip()
-            pygame.display.update()
 
         pygame.quit()
 
@@ -250,6 +250,10 @@ class GUI:
                     self.enable_tsp)
         b7 = Button(self.screen, "Center", self.gui_font, b_width, b_height, (6 * b_width + 5, 5), 5,
                     self.center_gui)
+        b8 = Button(self.screen, "Save", self.gui_font, b_width, b_height, (7 * b_width + 5, 5), 5,
+                    self.save)
+        b9 = Button(self.screen, "Load", self.gui_font, b_width, b_height, (8 * b_width + 5, 5), 5,
+                    self.load)
 
         self.buttons.append(b1)
         self.buttons.append(b2)
@@ -258,6 +262,8 @@ class GUI:
         self.buttons.append(b5)
         self.buttons.append(b6)
         self.buttons.append(b7)
+        self.buttons.append(b8)
+        self.buttons.append(b9)
 
     def handle_buttons(self, draw=True):
         """
@@ -401,6 +407,23 @@ class GUI:
         self.show_path = True
         self.done = False
         self.tsp_flag = False
+
+    def save(self):
+        """
+        Save the graph
+        """
+        self.reset_flags()
+        file = filedialog.asksaveasfilename()
+        self.algo.save_to_json(file)
+
+    def load(self):
+        """
+        Load a file
+        """
+        self.reset_flags()
+        file = filedialog.askopenfilename()
+        self.algo.load_from_json(file)
+        self.graph = self.algo.get_graph()
 
     def reset_flags(self):
         self.add_node_flag = False
