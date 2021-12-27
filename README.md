@@ -42,6 +42,7 @@ it also supports saving and loading graphs from and to json files
 
 * Python 3.9
 * Python's json, multiprocessing, Manager
+* PyGame
 
 # Functionalities
 
