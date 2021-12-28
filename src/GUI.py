@@ -5,6 +5,7 @@ import GraphAlgo
 from Button import Button
 from popup import PopUp
 from tkinter import filedialog
+from Utils import handle_empty_graph
 
 b_width = 120
 b_height = 45
@@ -422,8 +423,12 @@ class GUI:
         """
         self.reset_flags()
         file = filedialog.askopenfilename()
-        self.algo.load_from_json(file)
-        self.graph = self.algo.get_graph()
+        if file != "":
+            self.algo.load_from_json(file)
+            handle_empty_graph(self.algo.get_graph())
+            self.graph = self.algo.get_graph()
+            self.dots = {}
+            self.points = {}
 
     def reset_flags(self):
         self.add_node_flag = False

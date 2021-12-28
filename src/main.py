@@ -2,6 +2,7 @@ from DiGraph import DiGraph
 from GraphAlgo import GraphAlgo
 import sys
 from GUI import GUI
+from Utils import handle_empty_graph
 
 
 def check():
@@ -110,8 +111,10 @@ def check3():
 def main():
     graph_path = "../data/{}".format(sys.argv[1])
     print(graph_path)
-    algo = GraphAlgo(DiGraph())
+    graph = DiGraph()
+    algo = GraphAlgo(graph)
     algo.load_from_json(graph_path)
+    handle_empty_graph(algo.get_graph())
     gui = GUI(algo)
     gui.run_gui()
 
