@@ -85,8 +85,8 @@ you can also add and remove vertices and edges simply with the GUI
 
 ### Saving and Loading Graphs
 
-* **saving**: FILL
-* **loading**: FILL
+* **saving**: to save a graph, press on the the save button and then go to the directory in which you want to save the graph file in, then give it a name (with json extension) and press save.
+* **loading**: to load a graph, press on the load button, then search for the wanted file in the file manager and then choose it and pess open.
 
 # Sources
 
